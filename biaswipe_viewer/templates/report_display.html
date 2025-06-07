@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiasWipe Report</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 15px;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ecf0f1;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+            background-color: #fdd;
+            border: 1px solid #e74c3c;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .metrics-table td:first-child {
+            font-weight: bold;
+            width: 250px; /* Increased width for metric names */
+            color: #2980b9;
+        }
+        .csss-title {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #16a085;
+            font-size: 1.1em;
+        }
+        .csss-table {
+            margin-left: 20px;
+            width: auto; /* CSSS table not full width */
+            max-width: 500px; /* Max width for better readability */
+        }
+        .csss-table th {
+             background-color: #1abc9c;
+        }
+        .no-data {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BiasWipe Benchmark Report</h1>
+
+        {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+        {% endif %}
+
+        {% if report_data %}
+            {% for model_name, results in report_data.items() %}
+                <h2>Model: {{ model_name }}</h2>
+                {% if results and (results.SR is defined or results.SSS is defined or results.WOSI is defined) %}
+                    <table class="metrics-table">
+                        {% if results.SR is defined %}
+                        <tr><td>Stereotyping Rate (SR)</td><td>{{ results.SR | round(3) }}</td></tr>
+                        {% endif %}
+                        {% if results.SSS is defined %}
+                        <tr><td>Stereotype Severity Score (SSS)</td><td>{{ results.SSS | round(3) }}</td></tr>
+                        {% endif %}
+                        {% if results.WOSI is defined %}
+                        <tr><td>Weighted Overall Stereotype Index (WOSI)</td><td>{{ results.WOSI | round(3) }}</td></tr>
+                        {% endif %}
+                    </table>
+
+                    {% if results.CSSS and results.CSSS is mapping and results.CSSS | length > 0 %}
+                        <p class="csss-title">Category-Specific Stereotype Severity (CSSS):</p>
+                        <table class="csss-table">
+                            <tr>
+                                <th>Category</th>
+                                <th>Score</th>
+                            </tr>
+                            {% for category, score in results.CSSS.items() %}
+                                <tr>
+                                    <td>{{ category }}</td>
+                                    <td>{{ score | round(3) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <p class="csss-title no-data">No CSSS data available for this model.</p>
+                    {% endif %}
+                {% else %}
+                     <p class="no-data">No metric scores (SR, SSS, WOSI) available for model: {{ model_name }}.</p>
+                {% endif %}
+            {% else %}
+                {# This else corresponds to the for loop, if report_data is not empty but contains no models #}
+                <p class="no-data">No model data found in the report.</p>
+            {% endfor %}
+        {% elif not error_message %}
+            {# This elif triggers if report_data is None/empty AND there was no specific error_message set prior #}
+            <p class="no-data">No report data loaded. Ensure 'report.json' exists in the project root and is correctly formatted. You can generate it using the BiasWipe CLI.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
