@@ -1,0 +1,26 @@
+{
+    "prompts": {
+        "SR": 0.0,
+        "SSS": 0.0,
+        "CSSS": {},
+        "WOSI": 0.0
+    },
+    "model_responses": {
+        "SR": 0.0,
+        "SSS": 0.0,
+        "CSSS": {},
+        "WOSI": 0.0
+    },
+    "category_weights": {
+        "SR": 0.0,
+        "SSS": 0.0,
+        "CSSS": {},
+        "WOSI": 0.0
+    },
+    "annotations": {
+        "SR": 0.0,
+        "SSS": 0.0,
+        "CSSS": {},
+        "WOSI": 0.0
+    }
+}
