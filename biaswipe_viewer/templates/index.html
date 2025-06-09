@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StereoWipe: Measuring Fairness in LLMs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav {
+            background-color: #34495e;
+            padding: 10px 0;
+            margin: -20px -20px 30px -20px;
+            border-radius: 8px 8px 0 0;
+        }
+        .nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .nav li {
+            margin: 0 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav a:hover {
+            background-color: #3498db;
+        }
+        .nav a.active {
+            background-color: #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            color: #2980b9;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #e9ecef;
+            border: 2px dashed #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .learn-more {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <ul>
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/report">Report Viewer</a></li>
+                <li><a href="/documentation">Documentation</a></li>
+            </ul>
+        </nav>
+        
+        <h1>StereoWipe: Measuring Fairness in LLMs</h1>
+        
+        <h2>Introducing StereoWipe: A Dataset for Fairness in Large Language Models</h2>
+        
+        <p>As Large Language Models (LLMs) and chatbots become increasingly integrated into our daily lives, it's crucial that we address the harm of stereotyping and biases that can perpetuate through these technologies. StereoWipe is a pioneering project that aims to develop a comprehensive dataset for evaluating fairness in LLMs, with a specific focus on mitigating stereotyping across diverse and intersectional identities.</p>
+        
+        <h3>Why StereoWipe Matters</h3>
+        
+        <p>Current Gen AI benchmarks metrics often fall short in addressing the complexities of bias and stereotyping, relying on abstract definitions and Western cultural-centric assumptions. This can lead to LLMs that perpetuate existing social inequalities, rather than opening them. By combining the power of large generative models with community engagement and global cultural coverage, StereoWipe seeks to create a more nuanced and inclusive approach to fairness in LLMs.</p>
+        
+        <h3>Our Goal</h3>
+        
+        <p>Our goal is to create a dataset that empowers developers, researchers, and policymakers to build more equitable and culturally sensitive LLMs. By doing so, we can ensure that chatbots and other language-based technologies serve all communities and promote social understanding, rather than reinforcing harmful stereotypes.</p>
+        
+        <h3>Explore the Scope of Our Work</h3>
+        
+        <p>Below, you'll find an overview of the categories and example prompts that comprise our dataset. These categories represent the diverse range of biases and stereotypes that LLMs must navigate, from grammatical gender bias to cultural stereotypes and intersectional identities.</p>
+        
+        <h3>Categories</h3>
+        
+        <ul>
+            <li><strong>Cultural Stereotypes:</strong> Do LLMs perpetuate stereotypes in professional roles, domestic responsibilities, and educational expectations?</li>
+            
+            <li><strong>Linguistic Idioms and Expressions:</strong> How do LLMs translate idioms, interpret metaphors, and handle humor across cultures?</li>
+            
+            <li><strong>Name-based Bias:</strong> Can LLMs recognize and avoid biases based on names, such as ethnic or social class associations?</li>
+            
+            <li><strong>Socioeconomic Stereotypes:</strong> Do LLMs perpetuate stereotypes about social class, education level, or occupation?</li>
+            
+            <li><strong>Religious and Ethnic Stereotypes:</strong> How do LLMs handle language related to religious practices, ethnic minority languages, and cultural customs?</li>
+            
+            <li><strong>Age-related Stereotypes:</strong> Do LLMs perpetuate stereotypes about age, such as generational differences or age-based assumptions?</li>
+            
+            <li><strong>Regional and Dialectal Biases:</strong> Can LLMs recognize and respect regional language variations, dialects, and accents?</li>
+            
+            <li><strong>Historical Context and Colonial Influence:</strong> How do LLMs handle language related to historical events, colonialism, and cultural heritage?</li>
+            
+            <li><strong>Gender-neutral Language Handling:</strong> Can LLMs use inclusive language, recognize non-binary gender, and adapt to languages with gender-neutral pronouns?</li>
+            
+            <li><strong>Intersectionality in Language:</strong> How do LLMs handle language related to multiple minority identities, intersectional experiences, and conflicting cultural norms?</li>
+            
+            <li><strong>Emotion and Sentiment Expression:</strong> Can LLMs recognize and interpret emotions, sentiment, and tone across cultures and languages?</li>
+            
+            <li><strong>Grammatical Gender Bias:</strong> How do LLMs handle pronouns, adjectives, and professions in gendered languages?</li>
+        </ul>
+        
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiasWipe Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin: 0;
+        }
+        .nav {
+            background-color: #34495e;
+            padding: 10px 0;
+            margin: -20px -20px 30px -20px;
+            border-radius: 8px 8px 0 0;
+        }
+        .nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .nav li {
+            margin: 0 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav a:hover {
+            background-color: #3498db;
+        }
+        .nav a.active {
+            background-color: #3498db;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 8px;
+        }
+        h3 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            overflow-x: auto;
+        }
+        .json-example {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            overflow-x: auto;
+        }
+        .workflow-step {
+            background-color: #ecf0f1;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .metric-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .metric-title {
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 5px;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .arrow {
+            color: #3498db;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/report">Report Viewer</a></li>
+                <li><a href="/documentation" class="active">Documentation</a></li>
+            </ul>
+        </nav>
+
+        <div class="header">
+            <h1>BiasWipe Documentation</h1>
+            <p>Understanding the relationship between BiasWipe core engine and viewer</p>
+        </div>
+
+        <h2>System Overview</h2>
+        <div class="highlight">
+            <strong>BiasWipe</strong> is a benchmark system for evaluating AI model responses for stereotyping bias. 
+            The <strong>core engine</strong> processes data and generates metrics, while the <strong>viewer</strong> provides a web interface to visualize results.
+        </div>
+
+        <h2>Data Flow Pipeline</h2>
+        <div class="workflow-step">
+            <strong>biaswipe (Core Engine)</strong> <span class="arrow">→</span> Generates data <span class="arrow">→</span> <strong>biaswipe_viewer (Web Interface)</strong> <span class="arrow">→</span> Displays data
+        </div>
+
+        <h3>Specific Component Chain:</h3>
+        <div class="code-block">
+biaswipe/cli.py → biaswipe/scoring.py → biaswipe/report.py → report.json → biaswipe_viewer/webserver.py
+        </div>
+
+        <h2>Data Structure Contract</h2>
+        <p>The viewer expects a specific JSON structure that the core engine produces:</p>
+
+        <h3>Generated by biaswipe:</h3>
+        <div class="json-example">
+{
+  "model_name": {
+    "SR": 0.75,           // Stereotype Rate
+    "SSS": 0.68,          // Stereotype Severity Score  
+    "WOSI": 0.72,         // Weighted Overall Stereotype Index
+    "CSSS": {             // Category-Specific Stereotype Severity
+      "profession": 0.8,
+      "nationality": 0.6
+    }
+  }
+}
+        </div>
+
+        <h3>Consumed by biaswipe_viewer:</h3>
+        <ul>
+            <li>Reads <code>report.json</code> from parent directory</li>
+            <li>Displays SR, SSS, WOSI metrics in tables</li>
+            <li>Shows CSSS breakdown by category</li>
+            <li>Handles error cases when report is missing/malformed</li>
+        </ul>
+
+        <h2>Key Metrics Explained</h2>
+        
+        <div class="metric-card">
+            <div class="metric-title">SR (Stereotype Rate)</div>
+            Percentage of responses flagged as containing stereotyping content
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-title">SSS (Stereotype Severity Score)</div>
+            Average severity score of responses that were flagged as stereotyping
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-title">CSSS (Category-Specific Stereotype Severity)</div>
+            Breakdown of stereotype severity by categories like profession, nationality, gender, etc.
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-title">WOSI (Weighted Overall Stereotype Index)</div>
+            Weighted average of category-specific scores, allowing different importance weights per category
+        </div>
+
+        <h2>Complete Workflow</h2>
+        
+        <div class="workflow-step">
+            <strong>Step 1:</strong> Run <code>biaswipe/cli.py</code> with prompts, annotations, and model responses
+        </div>
+
+        <div class="workflow-step">
+            <strong>Step 2:</strong> Core engine uses LLM judges to evaluate responses for stereotyping
+        </div>
+
+        <div class="workflow-step">
+            <strong>Step 3:</strong> Compute metrics using <code>biaswipe/metrics.py</code>
+        </div>
+
+        <div class="workflow-step">
+            <strong>Step 4:</strong> Save results to <code>report.json</code> via <code>biaswipe/report.py</code>
+        </div>
+
+        <div class="workflow-step">
+            <strong>Step 5:</strong> <code>biaswipe_viewer</code> reads and visualizes the report
+        </div>
+
+        <h2>Core Components</h2>
+
+        <h3>biaswipe/cli.py</h3>
+        <p>Command-line interface that orchestrates the entire benchmark process. Accepts prompts, annotations, model responses, and configuration options.</p>
+
+        <h3>biaswipe/scoring.py</h3>
+        <p>Handles the scoring logic using LLM-as-a-Judge approach. Coordinates with judge ensemble to evaluate responses.</p>
+
+        <h3>biaswipe/metrics.py</h3>
+        <p>Implements the mathematical calculations for SR, SSS, CSSS, and WOSI metrics.</p>
+
+        <h3>biaswipe/judge.py</h3>
+        <p>Contains judge implementations (OpenAI, Anthropic, Mock) that evaluate responses for stereotyping content.</p>
+
+        <h3>biaswipe/report.py</h3>
+        <p>Generates the final JSON report that serves as the data source for the viewer.</p>
+
+        <h3>biaswipe_viewer/webserver.py</h3>
+        <p>Flask web application that reads the report.json and presents it in a user-friendly web interface.</p>
+
+        <div class="highlight">
+            <strong>Summary:</strong> The viewer is essentially the frontend dashboard for the BiasWipe benchmark results, providing an intuitive way to explore and understand model performance on stereotype detection tasks.
+        </div>
+    </div>
+</body>
+</html> 
