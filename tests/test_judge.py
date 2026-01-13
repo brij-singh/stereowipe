@@ -273,7 +273,8 @@ class TestJudgeSystem(unittest.TestCase):
 
         # Check failing judge's error structure
         self.assertIn("error", results[1])
-        self.assertIn(f"Exception for {type(failing_judge).__name__}", results[1]["error"]) # Type name check
+        # The code uses judge.name if available, so we should check for that
+        self.assertIn(f"Exception for {failing_judge.name}", results[1]["error"])
         self.assertIn(failing_judge.name, results[1]["details"]) # Specific error message check
 
     # --- Test API Key Missing for relevant judges ---
@@ -291,5 +292,3 @@ class TestJudgeSystem(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
-
-```
