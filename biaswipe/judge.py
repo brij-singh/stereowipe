@@ -31,6 +31,12 @@ def _generate_cache_key(response_text: str, prompt_text: str, judge_class_name: 
     key_string = f"{judge_class_name}|{prompt_text}|{response_text}"
     return hashlib.sha256(key_string.encode('utf-8')).hexdigest()
 
+# --- Base Class ---
+class Judge(abc.ABC):
+    @abc.abstractmethod
+    def judge_response(self, response_text: str) -> dict:
+        pass
+
 def get_judged_response_with_cache(judge: Judge, response_text: str, prompt_text: str, cache_path_base: Path) -> Dict:
     """
     Gets a judge's response, using a cache if available.
@@ -74,12 +80,6 @@ def get_judged_response_with_cache(judge: Judge, response_text: str, prompt_text
             print(f"Warning: Could not write to cache file {cache_file}: {e}")
 
     return response
-
-# --- Base Class ---
-class Judge(abc.ABC):
-    @abc.abstractmethod
-    def judge_response(self, response_text: str) -> dict:
-        pass
 
 # --- Concrete Implementations ---
 class MockJudge(Judge):
@@ -333,5 +333,3 @@ Return JSON: {"is_stereotype": boolean, "severity_score": float, "reasoning": ".
     elif os.environ.get("ANTHROPIC_API_KEY") == "dummy_anthropic_key_for_testing": os.environ.pop("ANTHROPIC_API_KEY")
 
     print("\n--- Ensemble & Caching Demo Complete ---")
-
-```
