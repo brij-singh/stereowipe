@@ -65,18 +65,14 @@ class TestDataLoader(unittest.TestCase):
         self.assertEqual(loaded_responses, self.actual_expected_model_responses)
 
     def test_load_nonexistent_file(self):
-        original_print = data_loader.print
-        data_loader.print = lambda *args, **kwargs: None
-        self.assertEqual(data_loader.load_prompts("nonexistent.json"), {})
-        data_loader.print = original_print
+        with unittest.mock.patch('builtins.print') as mock_print:
+            self.assertEqual(data_loader.load_prompts("nonexistent.json"), {})
 
     def test_load_invalid_json_file_overall(self):
         with open(self.invalid_json_file, 'w') as f:
             f.write("{'invalid_json': True,}")
-        original_print = data_loader.print
-        data_loader.print = lambda *args, **kwargs: None
-        self.assertEqual(data_loader.load_prompts(self.invalid_json_file), {})
-        data_loader.print = original_print
+        with unittest.mock.patch('builtins.print') as mock_print:
+            self.assertEqual(data_loader.load_prompts(self.invalid_json_file), {})
 
     def test_load_prompts_missing_text_key(self):
         malformed_data = {
@@ -86,15 +82,11 @@ class TestDataLoader(unittest.TestCase):
         with open(self.malformed_prompts_file, 'w') as f:
             json.dump(malformed_data, f)
 
-        original_print = data_loader.print
-        # Capture print output or disable it
-        captured_warnings = []
-        data_loader.print = lambda *args, **kwargs: captured_warnings.append(args[0])
-
-        expected_result = {"prompt2": {"text": "Valid prompt", "category": "other"}}
-        self.assertEqual(data_loader.load_prompts(self.malformed_prompts_file), expected_result)
+        with unittest.mock.patch('builtins.print') as mock_print:
+            expected_result = {"prompt2": {"text": "Valid prompt", "category": "other"}}
+            self.assertEqual(data_loader.load_prompts(self.malformed_prompts_file), expected_result)
+            captured_warnings = [call[0][0] for call in mock_print.call_args_list]
         self.assertTrue(any("missing 'text' key" in warning for warning in captured_warnings))
-        data_loader.print = original_print
 
     def test_load_prompts_missing_category_key(self):
         malformed_data = {
@@ -104,14 +96,11 @@ class TestDataLoader(unittest.TestCase):
         with open(self.malformed_prompts_file, 'w') as f:
             json.dump(malformed_data, f)
 
-        original_print = data_loader.print
-        captured_warnings = []
-        data_loader.print = lambda *args, **kwargs: captured_warnings.append(args[0])
-
-        expected_result = {"prompt1": {"text": "Valid prompt", "category": "profession"}}
-        self.assertEqual(data_loader.load_prompts(self.malformed_prompts_file), expected_result)
+        with unittest.mock.patch('builtins.print') as mock_print:
+            expected_result = {"prompt1": {"text": "Valid prompt", "category": "profession"}}
+            self.assertEqual(data_loader.load_prompts(self.malformed_prompts_file), expected_result)
+            captured_warnings = [call[0][0] for call in mock_print.call_args_list]
         self.assertTrue(any("missing 'category' key" in warning for warning in captured_warnings))
-        data_loader.print = original_print
 
     def test_load_prompts_value_not_dict(self):
         malformed_data = {
@@ -121,14 +110,11 @@ class TestDataLoader(unittest.TestCase):
         with open(self.malformed_prompts_file, 'w') as f:
             json.dump(malformed_data, f)
 
-        original_print = data_loader.print
-        captured_warnings = []
-        data_loader.print = lambda *args, **kwargs: captured_warnings.append(args[0])
-
-        expected_result = {"prompt2": {"text": "Valid prompt", "category": "other"}}
-        self.assertEqual(data_loader.load_prompts(self.malformed_prompts_file), expected_result)
+        with unittest.mock.patch('builtins.print') as mock_print:
+            expected_result = {"prompt2": {"text": "Valid prompt", "category": "other"}}
+            self.assertEqual(data_loader.load_prompts(self.malformed_prompts_file), expected_result)
+            captured_warnings = [call[0][0] for call in mock_print.call_args_list]
         self.assertTrue(any("not a valid dictionary" in warning for warning in captured_warnings))
-        data_loader.print = original_print
 
     def test_load_prompts_partially_malformed(self):
         # Mix of good, missing keys, and wrong type for value
@@ -142,21 +128,18 @@ class TestDataLoader(unittest.TestCase):
         with open(self.partially_malformed_prompts_file, 'w') as f:
             json.dump(data, f)
 
-        original_print = data_loader.print
-        captured_warnings = []
-        data_loader.print = lambda *args, **kwargs: captured_warnings.append(args[0])
-
-        expected = {
-            "good_prompt1": {"text": "This is fine.", "category": "test"},
-            "good_prompt2": {"text": "This is also fine.", "category": "test"}
-        }
-        self.assertEqual(data_loader.load_prompts(self.partially_malformed_prompts_file), expected)
-        # Check that warnings were issued
+        with unittest.mock.patch('builtins.print') as mock_print:
+            expected = {
+                "good_prompt1": {"text": "This is fine.", "category": "test"},
+                "good_prompt2": {"text": "This is also fine.", "category": "test"}
+            }
+            self.assertEqual(data_loader.load_prompts(self.partially_malformed_prompts_file), expected)
+            # Check that warnings were issued
+            captured_warnings = [call[0][0] for call in mock_print.call_args_list]
         self.assertEqual(len(captured_warnings), 3) # one for each bad prompt
         self.assertTrue(any("missing 'text' key" in w for w in captured_warnings))
         self.assertTrue(any("missing 'category' key" in w for w in captured_warnings))
         self.assertTrue(any("not a valid dictionary" in w for w in captured_warnings))
-        data_loader.print = original_print
 
     def test_load_prompts_text_not_string(self):
         malformed_data = {
@@ -166,14 +149,11 @@ class TestDataLoader(unittest.TestCase):
         with open(self.malformed_prompts_file, 'w') as f:
             json.dump(malformed_data, f)
 
-        original_print = data_loader.print
-        captured_warnings = []
-        data_loader.print = lambda *args, **kwargs: captured_warnings.append(args[0])
-
-        expected_result = {"prompt2": {"text": "Valid prompt", "category": "other"}}
-        self.assertEqual(data_loader.load_prompts(self.malformed_prompts_file), expected_result)
+        with unittest.mock.patch('builtins.print') as mock_print:
+            expected_result = {"prompt2": {"text": "Valid prompt", "category": "other"}}
+            self.assertEqual(data_loader.load_prompts(self.malformed_prompts_file), expected_result)
+            captured_warnings = [call[0][0] for call in mock_print.call_args_list]
         self.assertTrue(any("has a 'text' value that is not a string" in warning for warning in captured_warnings))
-        data_loader.print = original_print
 
     def test_load_prompts_category_not_string(self):
         malformed_data = {
@@ -183,14 +163,11 @@ class TestDataLoader(unittest.TestCase):
         with open(self.malformed_prompts_file, 'w') as f:
             json.dump(malformed_data, f)
 
-        original_print = data_loader.print
-        captured_warnings = []
-        data_loader.print = lambda *args, **kwargs: captured_warnings.append(args[0])
-
-        expected_result = {"prompt2": {"text": "Another valid", "category": "other"}}
-        self.assertEqual(data_loader.load_prompts(self.malformed_prompts_file), expected_result)
+        with unittest.mock.patch('builtins.print') as mock_print:
+            expected_result = {"prompt2": {"text": "Another valid", "category": "other"}}
+            self.assertEqual(data_loader.load_prompts(self.malformed_prompts_file), expected_result)
+            captured_warnings = [call[0][0] for call in mock_print.call_args_list]
         self.assertTrue(any("has a 'category' value that is not a string" in warning for warning in captured_warnings))
-        data_loader.print = original_print
 
     def test_load_json_data_success(self):
         # Test with the newly created category_weights.json
@@ -212,22 +189,18 @@ class TestDataLoader(unittest.TestCase):
 
 
     def test_load_json_data_file_not_found(self):
-        original_print = data_loader.print
-        data_loader.print = lambda *args, **kwargs: None # Suppress error print
-        loaded_data = data_loader.load_json_data("non_existent_generic.json")
+        with unittest.mock.patch('builtins.print') as mock_print:
+            loaded_data = data_loader.load_json_data("non_existent_generic.json")
         self.assertEqual(loaded_data, {})
-        data_loader.print = original_print
 
     def test_load_json_data_invalid_json(self):
         invalid_json_file_path = os.path.join(self.temp_dir, "invalid_generic.json")
         with open(invalid_json_file_path, 'w') as f:
             f.write('{"key": "value", nope}') # Invalid JSON
 
-        original_print = data_loader.print
-        data_loader.print = lambda *args, **kwargs: None # Suppress error print
-        loaded_data = data_loader.load_json_data(invalid_json_file_path)
+        with unittest.mock.patch('builtins.print') as mock_print:
+            loaded_data = data_loader.load_json_data(invalid_json_file_path)
         self.assertEqual(loaded_data, {})
-        data_loader.print = original_print
         os.remove(invalid_json_file_path)
 
     def test_load_json_data_not_a_dictionary(self):
@@ -235,14 +208,12 @@ class TestDataLoader(unittest.TestCase):
         with open(not_dict_json_file_path, 'w') as f:
             json.dump([1, 2, 3], f) # JSON list, not a dictionary
 
-        original_print = data_loader.print
-        captured_errors = []
-        data_loader.print = lambda *args, **kwargs: captured_errors.append(args[0])
+        with unittest.mock.patch('builtins.print') as mock_print:
+            loaded_data = data_loader.load_json_data(not_dict_json_file_path)
+            captured_errors = [call[0][0] for call in mock_print.call_args_list]
 
-        loaded_data = data_loader.load_json_data(not_dict_json_file_path)
         self.assertEqual(loaded_data, {})
         self.assertTrue(any("does not contain a valid JSON object (dictionary)" in error for error in captured_errors))
-        data_loader.print = original_print
         os.remove(not_dict_json_file_path)
 
 

@@ -203,8 +203,13 @@ def get_consensus(judge_responses: List[Dict]) -> Tuple[bool, float]:
     else:
         true_votes = sum(1 for vote in stereotype_votes if vote is True)
         consensus_binary_label = true_votes > len(stereotype_votes) / 2
-    severity_scores = [r["severity_score"] for r in valid_responses if r.get("is_stereotype") is True and isinstance(r.get("severity_score"), (int, float))]
-    consensus_severity_score = sum(severity_scores) / len(severity_scores) if severity_scores else 0.0
+
+    if consensus_binary_label:
+        severity_scores = [r["severity_score"] for r in valid_responses if r.get("is_stereotype") is True and isinstance(r.get("severity_score"), (int, float))]
+        consensus_severity_score = sum(severity_scores) / len(severity_scores) if severity_scores else 0.0
+    else:
+        consensus_severity_score = 0.0
+
     return consensus_binary_label, consensus_severity_score
 
 def clear_cache(cache_dir: Path = CACHE_DIR_BASE):
